@@ -20,13 +20,60 @@
 
 //Query Selector All
 
-var titles = document.querySelector('.title');
+// var titles = document.querySelector('.title');
 
-console.log(titles);
+// console.log(titles);
 
-var odd = document.querySelectorAll('li:nth-child(odd)');
+// var odd = document.querySelectorAll('li:nth-child(odd)');
 
-for(var i=0;i<odd.length;i++){
-    odd[i].style.backgroundColor = '#f4f4f4'
-}
+// for(var i=0;i<odd.length;i++){
+//     odd[i].style.backgroundColor = '#f4f4f4'
+// }
 
+var itemList = document.querySelector('#items');
+// parentnode
+// console.log(itemList.parentNode);
+// itemList.parentNode.style.backgroundColor = '#f4f4f4';
+// console.log(itemList.parentNode.parentNode);
+
+// parentElement
+// console.log(itemList.parentElement);
+// itemList.parentElement.style.backgroundColor = '#f4f4f4';
+// console.log(itemList.parentElement.parentElement.parentElement);
+
+// //childNodes
+// console.log(itemList.childNodes);   
+
+// //childNodes
+// console.log(itemList.children);
+// console.log(itemList.children[1])
+// itemList.children[1].style.backgroundColor = 'yellow';
+
+// // firstElementChild
+// console.log(itemList.firstElementChild);
+// itemList.firstElementChild.style.backgroundColor = 'pink';
+
+//Creating a div
+var newDiv = document.createElement('div');
+
+// Add a class
+newDiv.className = 'hello';
+
+// Add ID
+newDiv.id = 'hello1';
+
+// Add attr
+newDiv.setAttribute('title', 'Hello Div');
+
+// Create text node
+var newDivText = document.createTextNode('Hello World');
+
+// Add text to Div
+newDiv.appendChild(newDivText);
+
+var container = document.querySelector('header .container');
+var h1 = document.querySelector('header h1');
+
+console.log(newDiv);
+
+container.insertBefore(newDiv, h1);
