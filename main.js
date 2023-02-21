@@ -14,7 +14,7 @@ filter.addEventListener('keyup', filterItems);
 // Add item
 function addItem(e){
     e.preventDefault();
-
+    //
     // Get input value
     var newItem = document.getElementById('item').value;
 
