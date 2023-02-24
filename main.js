@@ -14,9 +14,12 @@ filter.addEventListener('keyup', filterItems);
 // Add item
 function addItem(e){
     e.preventDefault();
-    //
+    
     // Get input value
     var newItem = document.getElementById('item').value;
+
+    // Storing the submitted data into local storage
+    localStorage.setItem('submittedItem',newItem)
 
     // Create new li element
     var li = document.createElement('li');

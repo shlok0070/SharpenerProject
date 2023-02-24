@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Input and Display</title>
+  </head>
+  <body>
+    <form>
+      <label for="name">Name:</label>
+      <input type="text" id="name">
+      <br>
+      <label for="email">Email:</label>
+      <input type="email" id="email">
+      <br>
+      <label for="phone">Phone:</label>
+      <input type="tel" id="phone">
+      <br>
+      <button type="button" onclick="storeInput()">Submit</button>
+    </form>
+
+    <div id="output"></div>
+
+    <script>
+      function storeInput() {
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const phone = document.getElementById("phone").value;
+        
+        let data = JSON.parse(localStorage.getItem("data"));
+        if (!data) {
+          data = [];
+        }
+        data.push({ name, email, phone });
+        localStorage.setItem("data", JSON.stringify(data));
+        
+        displayInput();
+      }
+
+      function displayInput() {
+        const data = JSON.parse(localStorage.getItem("data"));
+        const outputDiv = document.getElementById("output");
+        outputDiv.innerHTML = "";
+        if (data) {
+          data.forEach((item) => {
+            const { name, email, phone } = item;
+            outputDiv.innerHTML += `<p>Name: ${name}</p><p>Email: ${email}</p><p>Phone: ${phone}</p><hr>`;
+          });
+        }
+      }
+
+      displayInput();
+    </script>
+  </body>
+</html>
