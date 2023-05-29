@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  </head>
+  <body>
+    <div class="container">
+      <form>
+        <div class="mb-3">
+          <label for="amount" class="form-label">Amount:</label>
+          <input type="number" class="form-control" id="amount" step="0.01">
+        </div>
+        <div class="mb-3">
+          <label for="description" class="form-label">Description:</label>
+          <input type="text" class="form-control" id="description">
+        </div>
+        <div class="mb-3">
+          <label for="category" class="form-label">Category:</label>
+          <select class="form-select" id="category">
+            <option value="fuel">Fuel</option>
+            <option value="food">Food</option>
+            <option value="electricity">Electricity</option>
+            <option value="movie">Movie</option>
+          </select>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="addExpense()">Add Expense</button>
+      </form>
+
+      <div id="output" class="mt-4"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      function addExpense() {
+        const amount = document.getElementById("amount").value;
+        const description = document.getElementById("description").value;
+        const category = document.getElementById("category").value;
+        
+        let data = JSON.parse(localStorage.getItem("data"));
+        if (!data) {
+          data = [];
+        }
+        data.push({ amount, description, category });
+        localStorage.setItem("data", JSON.stringify(data));
+        
+        displayExpenses();
+        resetForm();
+      }
+
+      function displayExpenses() {
+        const data = JSON.parse(localStorage.getItem("data"));
+        const outputDiv = document.getElementById("output");
+        outputDiv.innerHTML = "";
+        if (data) {
+          data.forEach((item, index) => {
+            const { amount, description, category } = item;
+            outputDiv.innerHTML += `
+              <div class="card mb-3">
+                <div class="card-body">
+                  <h5 class="card-title">Amount: ₹${amount}</h5>
+                  <p class="card-text">Description: ${description}</p>
+                  <p class="card-text">Category: ${category}</p>
+                  <button class="btn btn-primary" onclick="editExpense(${index})">Edit</button>
+                  <button class="btn btn-danger" onclick="deleteExpense(${index})">Delete</button>
+                </div>
+              </div>
+              `;
+          });
+        }
+      }
+      
+      function editExpense(index) {
+        let data = JSON.parse(localStorage.getItem("data"));
+        if (data && index >= 0 && index < data.length) {
+          const { amount, description, category } = data[index];
+          document.getElementById("amount").value = amount;
+          document.getElementById("description").value = description;
+          document.getElementById("category").value = category;
+          data.splice(index, 1);
+          localStorage.setItem("data", JSON.stringify(data));
+          displayExpenses();
+        }
+      }
+      
+      function deleteExpense(index) {
+        let data = JSON.parse(localStorage.getItem("data"));
+        if (data && index >= 0 && index < data.length) {
+          data.splice(index, 1);
+          localStorage.setItem("data", JSON.stringify(data));
+          displayExpenses();
+        }
+      }
+      
+      function resetForm() {
+        document.getElementById("amount").value = "";
+        document.getElementById("description").value = "";
+        document.getElementById("category").value = "fuel";
+      }
+
+      displayExpenses();
+    </script>
+  </body>
+</html>
