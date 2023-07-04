@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>Add Candy</h2>
+    <form id="candyForm">
+      <label for="candyName">Candy Name:</label>
+      <input type="text" id="candyName" required />
+      <label for="candyDescription">Description:</label>
+      <input type="text" id="candyDescription" required />
+      <label for="candyPrice">Price:</label>
+      <input type="number" id="candyPrice" step="0.01" required />
+      <label for="candyQuantity">Quantity:</label>
+      <input type="number" id="candyQuantity" required />
+      <button type="button" onclick="addItem()">Add Item</button>
+    </form>
+
+    <h2>Candy Details</h2>
+    <table id="candyTable">
+      <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Action</th>
+      </tr>
+    </table>
+
+    <script>
+      function addItem() {
+        const candyName = document.getElementById('candyName').value;
+        const candyDescription = document.getElementById('candyDescription').value;
+        const candyPrice = parseFloat(document.getElementById('candyPrice').value);
+        const candyQuantity = parseInt(document.getElementById('candyQuantity').value);
+
+        if (!candyName || !candyDescription || isNaN(candyPrice) || isNaN(candyQuantity)) {
+          alert('Please fill all fields with valid values.');
+          return;
+        }
+
+        const candyRow = document.createElement('tr');
+        candyRow.innerHTML = `
+          <td>${candyName}</td>
+          <td>${candyDescription}</td>
+          <td>${candyPrice.toFixed(2)}</td>
+          <td id="${candyName}_quantity">${candyQuantity}</td>
+          <td>
+            <button onclick="updateQuantity('${candyName}', -1)">Buy 1</button>
+            <button onclick="updateQuantity('${candyName}', -2)">Buy 2</button>
+            <button onclick="updateQuantity('${candyName}', -3)">Buy 3</button>
+          </td>
+        `;
+
+        document.getElementById('candyTable').appendChild(candyRow);
+        document.getElementById('candyForm').reset();
+      }
+
+      function updateQuantity(candyName, quantityIncrement) {
+        const quantityElem = document.getElementById(`${candyName}_quantity`);
+        let currentQuantity = parseInt(quantityElem.innerText);
+        currentQuantity += quantityIncrement;
+        if (currentQuantity < 0) {
+          currentQuantity = 0;
+          alert(`No more stock available for ${candyName}`)
+        }
+        quantityElem.innerText = currentQuantity;
+      }
+    </script>
+  </body>
+</html>
