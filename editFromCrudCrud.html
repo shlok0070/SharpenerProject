@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <form onSubmit="saveToLocalStorage(event)">
+      <label>Name</label>
+      <input type="text" name="username" required />
+      <label>EmailID</label>
+      <input type="email" name="emailID" required />
+      <label>Phone Number</label>
+      <input type="tel" name="phonenumber" />
+      <input type="hidden" name="editUserId" /> <!-- Hidden field to store the ID of the user being edited -->
+      <button type="submit" id="submitButton">Submit</button>
+    </form>
+    <ul id="listOfitems"></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <script>
+      // ... (existing code)
+
+      function editUserDetails(id, name, email, phonenumber) {
+        const form = document.querySelector('form');
+        form.username.value = name;
+        form.emailID.value = email;
+        form.phonenumber.value = phonenumber;
+        form.editUserId.value = id;
+
+        // Change the text of the submit button to indicate editing mode
+        const submitButton = document.getElementById('submitButton');
+        submitButton.innerText = 'Update';
+      }
+
+      function deleteFromCrudCrud(id) {
+        axios
+          .delete(`https://crudcrud.com/api/07707eb6dd8745c7b8b705c951aab2b1/appointmentData/${id}`)
+          .then(response => {
+            console.log(response);
+
+            // Refresh user list after successful deletion
+            showUserOnScreen();
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+
+      function showUserOnScreen() {
+        const parentElem = document.getElementById('listOfitems');
+
+        // Fetch data from the server
+        axios
+          .get("https://crudcrud.com/api/07707eb6dd8745c7b8b705c951aab2b1/appointmentData")
+          .then(response => {
+            console.log(response);
+            const data = response.data;
+
+            // Clear existing list items
+            parentElem.innerHTML = '';
+
+            // Display fetched data
+            data.forEach(user => {
+              const listItem = document.createElement('li');
+              listItem.innerHTML = `${user.name} - ${user.email} - ${user.phonenumber} <span class="edit-icon" onclick="editUserDetails('${user._id}', '${user.name}', '${user.email}', '${user.phonenumber}')">✏️</span> <span class="delete-icon" onclick="deleteFromCrudCrud('${user._id}')">🗑️</span>`;
+              parentElem.appendChild(listItem);
+            });
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+
+      // Load data from localStorage on page load
+      window.addEventListener('load', () => {
+        showUserOnScreen();
+      });
+
+      function saveToLocalStorage(event) {
+        event.preventDefault();
+        const name = event.target.username.value;
+        const email = event.target.emailID.value;
+        const phonenumber = event.target.phonenumber.value;
+        const editUserId = event.target.editUserId.value; // Get the ID of the user being edited
+
+        if (editUserId) {
+          // If editUserId exists, update the user details
+          axios
+            .put(`https://crudcrud.com/api/07707eb6dd8745c7b8b705c951aab2b1/appointmentData/${editUserId}`, {
+              name,
+              email,
+              phonenumber
+            })
+            .then(response => {
+              console.log(response);
+
+              // Reset the form fields and change the submit button text back to 'Submit'
+              event.target.reset();
+              const submitButton = document.getElementById('submitButton');
+              submitButton.innerText = 'Submit';
+
+              // Refresh user list after successful update
+              showUserOnScreen();
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        } else {
+          // If editUserId is not present, it's a new user, so add the user details
+          const obj = {
+            name,
+            email,
+            phonenumber
+          };
+
+          axios
+            .post(
+              "https://crudcrud.com/api/07707eb6dd8745c7b8b705c951aab2b1/appointmentData",
+              obj
+            )
+            .then(response => {
+              console.log(response);
+
+              // Save data to localStorage
+              localStorage.setItem('userData', JSON.stringify(response.data));
+
+              // Show user data on the screen after API call
+              showUserOnScreen();
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        }
+      }
+    </script>
+  </body>
+</html>
